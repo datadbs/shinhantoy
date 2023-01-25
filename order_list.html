@@ -8,16 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
-            const search = new URLSearchParams(location.search);
-            const order_id = search.get('order_id');
-            if (order_id > 0) {
-                $.get("http://127.0.0.1:8000/api/order/"+order_id)
-                    .then((result) => {
-                        $("#productName").text(result.name);
-                        $("#productPrice").text(result.price);
-                        $("#productType").text(result.product_type);
-                    });
-                $.get("http://127.0.0.1:8000/api/order/"+order_id)
+            $.get("http://127.0.0.1:8000/api/order/")
                     .then((result) => {
                         $("#orders").html("");
 
@@ -31,7 +22,6 @@
                             )
                         }
                     });
-            }
         });
     </script>
   </head>
@@ -39,8 +29,8 @@
     <div class="container">
         <h1 id="productName" class="text-center"></h1>
         <ul>
-            <li>가격: <span id="productPrice"></span></li>
-            <li>유형: <span id="productType"></span></li>
+            <li>상품번호: <span id="productPrice"></span></li>
+            <li>상품제조년월일: <span id="productType"></span></li>
         </ul>
         <hr>
         <ul class="list-group list-group-flush" id="orders">
