@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
-            $.get("http://127.0.0.1:8000/api/order/")
+            $.get("http://127.0.0.1:8000/api/order")
                     .then((result) => {
                         $("#orders").html("");
 
@@ -24,6 +24,24 @@
                     });
         });
     </script>
+    <script>
+        function search() {
+            $.get("http://127.0.0.1:8000/api/order/"+$("search").val())
+                    .then((result) => {
+                        $("#orders").html("");
+
+                        for (let i=0; i<result.results.length; i++) {
+                            const order = result.results[i];
+                            $("#orders").append(
+                                $(`<li class="list-group-item">
+                                    ${order.ord_no}<br><br>
+                                    ${order.ord_ymd}
+                                    </li>`)
+                            )
+                        }
+                    });
+        }
+    </script>
   </head>
   <body>
     <div class="container">
@@ -32,6 +50,11 @@
             <li>상품번호: <span id="productPrice"></span></li>
             <li>상품제조년월일: <span id="productType"></span></li>
         </ul>
+        <hr>
+        <div>
+            <input type="text" id="search" placeholder="검색어 입력">
+            <button type="button" class="btn btn-primary" onclick="search()">검색</button>
+        </div>
         <hr>
         <ul class="list-group list-group-flush" id="orders">
             <li class="list-group-item">상품 리스트입니다.<br><br>김윤재 (2023.01.25 14:21:11)</li>
