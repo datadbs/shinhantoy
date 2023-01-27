@@ -26,11 +26,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
+    comment_id = serializers.SerializerMethodField()
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
         required=False
     )
-
+    def get_comment_id(self, obj):
+        return obj.comment.id
     def validate_user(self, value):
         if not value.is_authenticated:
             raise serializers.ValidationError('user is required')

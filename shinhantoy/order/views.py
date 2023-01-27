@@ -58,9 +58,21 @@ class CommentListView(
 
 class CommentCreateView(
     mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
     generics.GenericAPIView
 ):  
     serializer_class = CommentCreateSerializer
+
+    def get_queryset(self):
+        order_id = self.kwargs.get('order_id')
+        if order_id:
+            return Comment.objects.filter(order_id=order_id) \
+                .select_related('user', 'order') \
+                .filter(id=id)
+        return Comment.objects.none()
     
     def post(self, request, *args, **kwargs):
         return self.create(request, args, kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, args, kwargs)

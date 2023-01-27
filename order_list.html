@@ -8,38 +8,44 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
-            $.get("http://127.0.0.1:8000/api/order")
+            const search = new URLSearchParams(location.search);
+            const order_id = search.get('order_id');
+            if (order_id > 0) {
+                $.get("http://127.0.0.1:8000/api/order/" + order_id)
                     .then((result) => {
                         $("#orders").html("");
 
-                        for (let i=0; i<result.results.length; i++) {
-                            const order = result.results[i];
+                        const order = result;
                             $("#orders").append(
                                 $(`<li class="list-group-item">
                                     ${order.ord_no}<br><br>
                                     ${order.ord_ymd}
                                     </li>`)
                             )
+                    });
+            }
+            else {
+                $.get("http://127.0.0.1:8000/api/order")
+                    .then((result) => {
+                        $("#orders").html("");
+
+                        for (let i=0; i<result.results.length; i++) {
+                            const order = result.results[i];
+                            $("#orders").append(
+                                $(`<a href="order_detail.html?order_id=${order.id}" class="list-group-item">
+                                    ${order.ord_no}<br><br>
+                                    ${order.ord_ymd}
+                                </a>`)
+                            )
                         }
                     });
+            }
+            
         });
     </script>
     <script>
         function search() {
-            $.get("http://127.0.0.1:8000/api/order/"+$("search").val())
-                    .then((result) => {
-                        $("#orders").html("");
-
-                        for (let i=0; i<result.results.length; i++) {
-                            const order = result.results[i];
-                            $("#orders").append(
-                                $(`<li class="list-group-item">
-                                    ${order.ord_no}<br><br>
-                                    ${order.ord_ymd}
-                                    </li>`)
-                            )
-                        }
-                    });
+            location.href = window.location.href.split("?")[0] + '?order_id=' + $("#search").val()
         }
     </script>
   </head>
@@ -52,7 +58,7 @@
         </ul>
         <hr>
         <div>
-            <input type="text" id="search" placeholder="검색어 입력">
+            <input type="text" id="search" placeholder="order_id 입력">
             <button type="button" class="btn btn-primary" onclick="search()">검색</button>
         </div>
         <hr>
