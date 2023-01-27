@@ -94,14 +94,14 @@
                 },
             })
         }
-        function delcomment(comment_id) {
+        function delcomment(pk) {
             $.ajax({
                 type: 'DELETE',
-                url: 'http://127.0.0.1:8000/api/order/comment',
+                url: 'http://127.0.0.1:8000/api/order/comment/'+pk,
                 data: {
                     comments: $("#comment").val(),
                     order: order_id,
-                    id:comment_id,
+                    pk:pk,
                 },
                 beforeSend: function(xhr) {
                   xhr.setRequestHeader("Authorization", "JWT " + $("#token").val());

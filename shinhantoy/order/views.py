@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import mixins, generics
 
-from .serializers import OrderSerializer, CommentSerializer, CommentCreateSerializer
+from .serializers import OrderSerializer, CommentSerializer, CommentCreateSerializer, CommentDeleteSerializer
 from .models import Order, Comment
 # Create your views here.
 
@@ -58,7 +58,6 @@ class CommentListView(
 
 class CommentCreateView(
     mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
     generics.GenericAPIView
 ):  
     serializer_class = CommentCreateSerializer
@@ -74,11 +73,20 @@ class CommentCreateView(
     def post(self, request, *args, **kwargs):
         return self.create(request, args, kwargs)
     
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, args, kwargs)
 
-class CommentDetailView(
+class CommentDeleteView(
     mixins.DestroyModelMixin,
     generics.GenericAPIView
 ):
-    pass
+    serializer_class = CommentDeleteSerializer
+    
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        if pk:
+            return Comment.objects.filter(pk=pk) \
+                .select_related('user', 'order') \
+
+        return Comment.objects.none()
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, args, kwargs)
