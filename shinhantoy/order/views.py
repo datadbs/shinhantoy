@@ -68,7 +68,7 @@ class CommentCreateView(
         if order_id:
             return Comment.objects.filter(order_id=order_id) \
                 .select_related('user', 'order') \
-                .filter(id=id)
+                .filter()
         return Comment.objects.none()
     
     def post(self, request, *args, **kwargs):
@@ -76,3 +76,9 @@ class CommentCreateView(
     
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, args, kwargs)
+
+class CommentDetailView(
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView
+):
+    pass
